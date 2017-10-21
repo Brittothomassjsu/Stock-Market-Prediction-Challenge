@@ -1,11 +1,17 @@
+import sys
 import tweepy
 import csv
+import pydot
+import graphviz
 import numpy as np
 from textblob import TextBlob
 from keras.models import Sequential
 from keras.layers import Dense,LSTM
+from keras.utils import plot_model
 np.random.seed(7)
 import matplotlib.pyplot as plt
+
+datafile = sys.argv[1]
 
 
 #Step 1 - Insert your API keys
@@ -18,8 +24,8 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 #Step 2 - Search for your company name on Twitter
-public_tweets = api.search('company_name')
-
+public_tweets = api.search('Facebook')
+print (public_tweets[2].text)
 
 #Step 3 - Define a threshold for each sentiment to classify each 
 #as positive or negative. If the majority of tweets you've collected are positive
@@ -52,7 +58,7 @@ def get_data(filename):
 	return
 
 #Step 5 reference your CSV file here
-get_data('fb.csv')
+get_data(datafile)
 plt.plot(prices)
 
 plt.show()
@@ -85,8 +91,8 @@ def predict_prices(dates, prices, x):
     TestX=np.reshape(TestX,(len(TestX),1))
     TestY=np.reshape(TestY,(len(TestY),1))
     
-    #for i in range(251):
-     #   print TrainX[i],TrainY[i],'\n'
+   # for i in range(251):
+    #    print (TrainX[i],TrainY[i],'\n')
     
     
     model=Sequential()
@@ -96,8 +102,13 @@ def predict_prices(dates, prices, x):
     
     model.add(Dense(1,init='uniform',activation='relu'))
     model.compile(loss='mean_squared_error',optimizer='adam',metrics=['accuracy'])
-    model.fit(TrainX,TrainY,nb_epoch=100,batch_size=3,verbose=1)
+    trainData = model.fit(TrainX,TrainY,nb_epoch=100,batch_size=3,verbose=1)
+    score = model.evaluate(TrainX,TrainY,batch_size=3, verbose=1, sample_weight=None)
+    print('\n','Test score:', score[0])
+    print('Test accuracy:', score[1]) 
 
-
+    
+    #score,acc = model.evaluate(TrainX,TrainY,batch_size=3,show_accuracy=true)
+    #return score,acc
 predict_prices(dates,prices,2)
 #print(predicted_price)
