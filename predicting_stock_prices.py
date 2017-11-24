@@ -107,8 +107,7 @@ def predict_prices(dates, prices, x):
     print('\n','Test score:', score[0])
     print('Test accuracy:', score[1]) 
 
-    
-    #score,acc = model.evaluate(TrainX,TrainY,batch_size=3,show_accuracy=true)
-    #return score,acc
+    return
+
 predict_prices(dates,prices,2)
 #print(predicted_price)
